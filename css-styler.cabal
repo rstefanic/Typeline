@@ -1,14 +1,12 @@
 name:                css-styler
 version:             0.1.0.0
--- synopsis:
--- description:
-homepage:            https://github.com/githubuser/css-styler#readme
+homepage:            https://github.com/rstefanic/css-styler#readme
 license:             BSD3
 license-file:        LICENSE
-author:              Author name here
-maintainer:          example@example.com
-copyright:           2017 Author name here
-category:            Web
+author:              Robert Stefanic
+maintainer:          rstefanic72@gmail.com
+copyright:           2017 Robert Stefanic
+category:            Tools
 build-type:          Simple
 cabal-version:       >=1.10
 extra-source-files:  README.md

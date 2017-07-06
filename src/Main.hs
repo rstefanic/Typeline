@@ -31,13 +31,14 @@ data Comment = Comment String deriving Show
 rule :: Parser Rule
 rule = do
   p <- spaces *> (many1 $ letter <|> char '-') <* char ':' <* spaces
-  v <- many1 (noneOf ";") <* (optional (char ';')) <* spaces
+  v <- many1 (noneOf ";\n") <* (optional $ char ';' <|> char '\n') <* spaces
   return $ Rule p v
 
 ruleset :: Parser Ruleset
 ruleset = do
-  s <- selector `sepBy1` spaces
-  r <- char '{' <* spaces *> many1 rule <* char '}' <* spaces
+  s <- spaces *> selector `sepBy1` spaces
+  r <- oneOf "{\n" <* spaces *> many1 rule
+    <* oneOf "}\n" <* spaces
   return $ Ruleset (unwords s) r
 
 selector :: Parser Selector
@@ -50,12 +51,12 @@ main = do
     [fileName] -> do
       file <- readFile fileName
       case parseCSSFile file of
-        Right validCSS -> putStrLn $ show $ beautifyCSS validCSS
+        Right validCSS -> writeCSSFile "test.css" (beautifyCSS validCSS)
         Left err       -> putStrLn $ show err      
-    _          -> putStrLn help
+    _          -> help
 
-help :: String
-help = unlines $
+help :: IO () 
+help = putStr $ unlines $
   "CSS Styler\n" :
   "Style organizes your CSS file by rule length for any given rule set\n" :
   "Run the name of the file that you want the program to output" : []
@@ -74,3 +75,14 @@ sortedRules = (returnRules . sortRules . fmap getRuleLength)
                          
 getRuleLength :: Rule -> (Rule, Int)
 getRuleLength rule@(Rule property value) = (rule, (length property + length value))
+
+writeCSSFile :: FilePath -> [Ruleset] -> IO ()
+writeCSSFile file rules = writeFile file (concat rules')
+  where rules' = fmap rulesToString rules
+
+rulesToString :: Ruleset -> String
+rulesToString (Ruleset selector rules) =
+  let writeRule (Rule property value) = "  " ++ property ++ ": " ++ value ++ ";\n"
+  in selector ++ " {\n" ++ (concat $ fmap writeRule rules) ++ "}\n"
+
+
