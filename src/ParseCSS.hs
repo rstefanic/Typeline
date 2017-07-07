@@ -61,7 +61,7 @@ selector :: Parser Selector
 selector = many1 (oneOf "#." <|> letter <|> digit) <* spaces
 
 parseCSSFile :: String -> Either ParseError [Ruleset]
-parseCSSFile = parse (many1 ruleset) "css file"
+parseCSSFile = parse (many1 ruleset) "Creating CSS File"
 
 beautifyCSS :: [Ruleset] -> [Ruleset]
 beautifyCSS rulesets = fmap organizeRules rulesets
