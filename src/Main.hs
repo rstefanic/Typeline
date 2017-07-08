@@ -74,8 +74,9 @@ main = do
   when (optInput opts == []) $ do
     let inputUsage = "\nMust include at least one input file to compile!\n Uses:\n"
     ioError $ userError $ usageInfo inputUsage options
-    
-  case parseCSSFile $ optInput opts of
+
+  inputFile <- readFile $ optInput opts
+  case parseCSSFile $ inputFile of
     Right validCSS -> writeCSSFile style output validCSS
     Left  err      -> ioError $ userError $ show err
   exitSuccess

@@ -2,6 +2,8 @@ module ParseCSS
         ( parseCSSFile
         , writeCSSFile
         , CompileOption(..)
+        , Ruleset(..)
+        , Rule(..)
         ) where
 
 import Data.List (sortBy)
@@ -20,9 +22,7 @@ import Text.Parsec
        , letter
        , string
        , sepBy1
-       , endBy
        , anyChar
-       , between
        )
 import Text.Parsec.String (Parser)
 import Text.Parsec.Combinator (manyTill)
@@ -30,13 +30,10 @@ import Text.Parsec.Error (ParseError)
 
 data CompileOption = Beautify | Minify deriving (Eq, Show)
 
-type Filename = String
 type Selector = String
-type CSSFile  = String
-
-data Rule = Rule String String deriving Show
+data Rule = Rule String String deriving (Eq, Show)
 data Ruleset = Ruleset Selector [Rule]
-             | Comment String deriving Show
+             | Comment String deriving (Eq, Show)
 
 rule :: Parser Rule
 rule = do
@@ -44,6 +41,7 @@ rule = do
   v <- many1 (noneOf ";\n") <* (optional $ char ';' <|> char '\n') <* spaces
   return $ Rule p v
   
+
 ruleset :: Parser Ruleset
 ruleset = do
   s <- selector `sepBy1` spaces
@@ -62,7 +60,7 @@ selector :: Parser Selector
 selector = many1 (oneOf "#." <|> letter <|> digit) <* spaces
 
 parseCSSFile :: String -> Either ParseError [Ruleset]
-parseCSSFile = parse (many1 ruleset) "Creating CSS File"
+parseCSSFile = parse (many1 ruleset) "Compiling CSS File"
 
 beautifyCSS :: [Ruleset] -> [Ruleset]
 beautifyCSS rulesets = fmap organizeRules rulesets
@@ -79,7 +77,8 @@ getRuleLength rule@(Rule property value) = (rule, (length property + length valu
 
 writeCSSFile :: CompileOption -> FilePath -> [Ruleset] -> IO ()
 writeCSSFile Minify   file rules = writeFile file (concat $ fmap minifyRulesToString rules)
-writeCSSFile Beautify file rules = writeFile file (concat $ fmap beautifyRulesToString rules)
+writeCSSFile Beautify file rules = writeFile file (concat $ fmap beautifyRulesToString rules')
+  where rules' = beautifyCSS rules
 
 beautifyRulesToString :: Ruleset -> String
 beautifyRulesToString (Comment comment) = "/*" ++ comment ++ "*/"
@@ -90,5 +89,5 @@ beautifyRulesToString (Ruleset selector rules) =
 minifyRulesToString :: Ruleset -> String
 minifyRulesToString (Comment _) = []
 minifyRulesToString (Ruleset selector rules) =
-  let writeRule (Rule property value) = property ++ ":" ++ value
+  let writeRule (Rule property value) = property ++ ":" ++ value ++ ";"
   in selector ++ "{" ++ (concat $ fmap writeRule rules) ++ "}"

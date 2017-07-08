@@ -12,13 +12,13 @@ This CSS styler both allows you to write CSS using a simpler syntax, and it beau
 ### Short Term
 
 * Add Tests
-* Fix the Beautify/Minify functions in ParseCSS.hs
 * Add SASS like syntax
 * Add SASS mixins
 * Add SASS extensions
 * Add SASS nesting
-* Pick a language/project name
+* Pick a language/project name [file extenstion name too]
 
 ### Long Term
 
 * Add short hand for common rules for extensibility [e.g. "bg" for "background", "bgi" for "background-image", "mt" for "margin-top", etc.]
+* Add syntax highlighting for emacs
