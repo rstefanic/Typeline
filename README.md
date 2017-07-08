@@ -12,7 +12,6 @@ This CSS styler both allows you to write CSS using a simpler syntax, and it beau
 ### Short Term
 
 * Add Tests
-* Fix cmd arguments (still)
 * Fix the Beautify/Minify functions in ParseCSS.hs
 * Add SASS like syntax
 * Add SASS mixins
