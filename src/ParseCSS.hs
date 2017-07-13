@@ -1,6 +1,7 @@
 module ParseCSS
         ( parseCSSFile
         , writeCSSFile
+        , beautifyRulesToString
         , CompileOption(..)
         , Ruleset(..)
         , Rule(..)
@@ -57,7 +58,7 @@ comment = do
   return $ Comment commentString
 
 selector :: Parser Selector
-selector = many1 (oneOf "#." <|> letter <|> digit) <* spaces
+selector = many1 (oneOf "#." <|> letter <|> digit <|> char '-') <* spaces
 
 parseCSSFile :: String -> Either ParseError [Ruleset]
 parseCSSFile = parse (many1 ruleset) "Compiling CSS File"

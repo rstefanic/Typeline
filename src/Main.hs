@@ -56,7 +56,7 @@ determineOptions argv =
   case getOpt Permute options argv of
     (o, n, []    ) -> return $ (foldl (flip id) defaultOptions o, n)
     (_, _, errors) -> ioError $ userError $ concat errors ++ usageInfo header options
-  where header = "\nUsage: css-styler [OPTION...] filenames"
+  where header = "\nUsage: typeline [OPTION...] filenames"
 
 main :: IO ()
 main = do
@@ -69,7 +69,7 @@ main = do
     info
     exitSuccess
   when (optVersion opts) $ do
-    putStrLn "CSS-Styler -- Version 1.0.0"
+    putStrLn "Typeline -- Version 1.0.0"
     exitSuccess
   when (optInput opts == []) $ do
     let inputUsage = "\nMust include at least one input file to compile!\n Uses:\n"
@@ -84,6 +84,6 @@ main = do
 
 info :: IO () 
 info = putStr $ unlines $
-  "CSS Styler\n" :
+  "Typeline\n" :
   "Style organizes your CSS file by rule length for any given rule set\n" :
   "Run the name of the file that you want the program to output" : []

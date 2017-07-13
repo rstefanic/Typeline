@@ -1,4 +1,4 @@
-# css-styler
+# Typeline
 
 ## A CSS preprocessor that also stylizes the sheet for easy reading
 
@@ -11,12 +11,12 @@ This CSS styler both allows you to write CSS using a simpler syntax, and it beau
 
 ### Short Term
 
-* Add Tests
+* Extend Tests Suite
+* Refactor Rules and Comments to allow for expansion
 * Add SASS like syntax
 * Add SASS mixins
 * Add SASS extensions
 * Add SASS nesting
-* Pick a language/project name [file extenstion name too]
 
 ### Long Term
 
