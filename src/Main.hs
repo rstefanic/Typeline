@@ -1,10 +1,9 @@
 module Main where
 
-import ParseCSS (parseCSSFile, writeCSSFile, CompileOption(..))
+import ParseCSS (parseCSS, writeCSSFile, CompileOption(..))
 
 import Control.Monad (when)
-import Data.Maybe (fromMaybe)
-import System.IO (readFile, writeFile)
+import System.IO (readFile)
 import System.Exit (exitSuccess)
 import System.Environment (getArgs)
 import System.Console.GetOpt
@@ -61,7 +60,7 @@ determineOptions argv =
 main :: IO ()
 main = do
   argv <- getArgs
-  (opts, fnames) <- determineOptions argv
+  (opts, _) <- determineOptions argv
   let output = optOutput opts
   let style = optStyle opts
 
@@ -76,7 +75,7 @@ main = do
     ioError $ userError $ usageInfo inputUsage options
 
   inputFile <- readFile $ optInput opts
-  case parseCSSFile $ inputFile of
+  case parseCSS $ inputFile of
     Right validCSS -> writeCSSFile style output validCSS
     Left  err      -> ioError $ userError $ show err
   exitSuccess

@@ -6,3 +6,6 @@ clean :
 
 test :
 	stack test
+
+repl:
+	stack ghci
