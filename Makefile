@@ -7,5 +7,5 @@ clean :
 test :
 	stack test
 
-repl:
+ghci:
 	stack ghci

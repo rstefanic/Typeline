@@ -42,10 +42,10 @@ data Block = Ruleset Selector [Rule]
              | Comment String deriving (Eq, Show)
 
 rule :: Parser Rule
-rule = do
-  p <- spaces *> (many1 $ letter <|> char '-') <* char ':' <* spaces
-  v <- many1 (noneOf ";\n") <* (optional $ char ';' <|> char '\n') <* spaces
-  return $ Rule p v
+rule = do try $ commentRule <|> do
+            p <- spaces *> (many1 $ letter <|> char '-') <* char ':' <* spaces
+            v <- many1 (noneOf ";\n") <* (optional $ char ';' <|> char '\n') <* spaces
+            return $ Rule p v
 
 commentRule :: Parser Rule
 commentRule = do
@@ -58,14 +58,14 @@ ruleset :: Parser Block
 ruleset = do try comment
       <|> do
           s <- selector `sepBy1` spaces
-          r <- oneOf "{\n" <* spaces *> many1 (rule <|> commentRule)
+          r <- oneOf "{\n" <* spaces *> many1 rule
             <* oneOf "}\n" <* spaces
           return $ Ruleset (unwords s) r
 
 comment :: Parser Block
 comment = do
   commentString <- try $
-        ((string "--") *> manyTill anyChar (try $ char '\n'))           
+        ((string "--") *> manyTill anyChar (try $ string "\n"))           
     <|> ((string "/*") *> manyTill anyChar (try $ string "*/"))
   return $ Comment commentString
 
